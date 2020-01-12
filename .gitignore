@@ -1,0 +1,10 @@
+
+/__pycache__
+/env
+/.vscode
+
+nohup.out
+pid.txt
+info.txt
+
+api_keys.py
