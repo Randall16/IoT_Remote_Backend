@@ -1,9 +1,15 @@
+import time, queue, threading
 from flask import Flask, abort, request
 
 from remote import Button, send_signal
 from api_keys import VALID_KEYS
 
+
 app = Flask(__name__)
+queue = queue.Queue()
+
+def press_button(button: Button, reps: int=0):
+    queue.put(button)
 
 @app.route('/api/<button>', methods=['POST'])
 def handle_button(button: str):
@@ -27,61 +33,70 @@ def handle_button(button: str):
         if json != None:
             presses = json.get('presses', 1)
 
-        send_signal(Button.VOLUME_UP, presses)
+        press_button(Button.VOLUME_UP, presses)
     elif button == 'VOLUME_DOWN':
         presses = 1
         json = request.get_json()
         if json != None:
             presses = json.get('presses', 1)
 
-        send_signal(Button.VOLUME_DOWN, presses)
+        press_button(Button.VOLUME_DOWN, presses)
     elif button == 'POWER':
-        send_signal(Button.POWER)
+        press_button(Button.POWER)
     elif button == 'MUTE':
-        send_signal(Button.MUTE)
+        press_button(Button.MUTE)
     elif button == 'INPUT':
-        send_signal(Button.INPUT)
+        press_button(Button.INPUT)
     elif button == 'CHANNEL_UP':
-        send_signal(Button.CHANNEL_UP)
+        press_button(Button.CHANNEL_UP)
     elif button == 'CHANNEL_DOWN':
-        send_signal(Button.CHANNEL_DOWN)
+        press_button(Button.CHANNEL_DOWN)
     elif button == 'SELECT':
-        send_signal(Button.SELECT)
+        press_button(Button.SELECT)
     elif button == 'UP':
-        send_signal(Button.UP)
+        press_button(Button.UP)
     elif button == 'DOWN':
-        send_signal(Button.DOWN)
+        press_button(Button.DOWN)
     elif button == 'LEFT':
-        send_signal(Button.LEFT)
+        press_button(Button.LEFT)
     elif button == 'RIGHT':
-        send_signal(Button.RIGHT)
+        press_button(Button.RIGHT)
     elif button == 'ZERO':
-        send_signal(Button.ZERO)
+        press_button(Button.ZERO)
     elif button == 'ONE':
-        send_signal(Button.ONE)
+        press_button(Button.ONE)
     elif button == 'TWO':
-        send_signal(Button.TWO)
+        press_button(Button.TWO)
     elif button == 'THREE':
-        send_signal(Button.THREE)
+        press_button(Button.THREE)
     elif button == 'FOUR':
-        send_signal(Button.FOUR)
+        press_button(Button.FOUR)
     elif button == 'FIVE':
-        send_signal(Button.FIVE)
+        press_button(Button.FIVE)
     elif button == 'SIX':
-        send_signal(Button.SIX)
+        press_button(Button.SIX)
     elif button == 'SEVEN':
-        send_signal(Button.SEVEN)
+        press_button(Button.SEVEN)
     elif button == 'EIGHT':
-        send_signal(Button.EIGHT)
+        press_button(Button.EIGHT)
     elif button == 'NINE':
-        send_signal(Button.NINE)
+        press_button(Button.NINE)
     else:
         return abort(400)
-
 
     return '%s sent' % button
 
 
+
+def handle_signals():
+    while True:
+        if not queue.empty():
+            button = queue.get()
+            send_signal(button)
+            time.sleep(0.1)
+
 # Run the app
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True) 
+    thread = threading.Thread(target=handle_signals)
+    thread.start()
+    app.run(host='0.0.0.0', debug=True)
