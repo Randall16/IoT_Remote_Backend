@@ -1,15 +1,22 @@
-import time, queue, threading
+import time
 from flask import Flask, abort, request
+from threading import Lock
 
 from remote import Button, send_signal
 from api_keys import VALID_KEYS
 
 
+# Globals
 app = Flask(__name__)
-queue = queue.Queue()
+lock = Lock()
 
+# Functions
 def press_button(button: Button, reps: int=0):
-    queue.put(button)
+    lock.acquire()
+    send_signal(button, reps)
+    time.sleep(0.1)
+    lock.release()
+
 
 @app.route('/api/<button>', methods=['POST'])
 def handle_button(button: str):
@@ -87,16 +94,6 @@ def handle_button(button: str):
     return '%s sent' % button
 
 
-
-def handle_signals():
-    while True:
-        if not queue.empty():
-            button = queue.get()
-            send_signal(button)
-            time.sleep(0.1)
-
 # Run the app
 if __name__ == "__main__":
-    thread = threading.Thread(target=handle_signals)
-    thread.start()
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0')
