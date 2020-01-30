@@ -11,7 +11,7 @@ app = Flask(__name__)
 lock = Lock()
 
 # Functions
-def press_button(button: Button, reps: int=0):
+def press_button(button: Button, reps: int=1):
     lock.acquire()
     send_signal(button, reps)
     time.sleep(0.1)
