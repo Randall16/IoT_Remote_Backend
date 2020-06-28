@@ -1,0 +1,7 @@
+# Command to run process indefinitely
+nohup python3 app.py &
+
+# Get the process ID of whatever is running on the Flask port 
+lsof -i :5000
+
+# kill <pidID>

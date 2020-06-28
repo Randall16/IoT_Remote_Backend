@@ -1,5 +1,4 @@
 import subprocess
-import time
 from enum import Enum
 
 COMMAND = 'irsend'
@@ -30,13 +29,11 @@ class Button(Enum):
     SELECT = 'KEY_SELECT'
     MUTE = 'KEY_MUTE'
 
-def send_signal(button: Button, reps: int=1):
-    for i in range(reps):
-        if i != 1:
-            time.sleep(0.1)
 
-        # Create Bash command
-        # button.value is appended three times because IR signal needs to be bursted
-        # NOTE this vaires from TV to TV so some will only it to be appened once
-        command = [COMMAND, FLAG1, TV_NAME, button.value, button.value, button.value]
-        subprocess.run(command)
+def send_signal(button: Button):
+
+    # Create Bash command
+    # button.value is appended three times because IR signal needs to be bursted
+    # NOTE this vaires from TV to TV so some will only it to be appened once
+    command = [COMMAND, FLAG1, TV_NAME, button.value, button.value, button.value]
+    subprocess.run(command)

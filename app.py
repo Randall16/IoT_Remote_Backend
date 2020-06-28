@@ -9,12 +9,13 @@ from api_keys import VALID_KEYS
 # Globals
 app = Flask(__name__)
 lock = Lock()
+MINIMUM_TIME_BETWEEN_SIGNALS = 0.08
 
 # Functions
-def press_button(button: Button, reps: int=1):
+def press_button(button: Button):
     lock.acquire()
-    send_signal(button, reps)
-    time.sleep(0.1)
+    send_signal(button)
+    time.sleep(MINIMUM_TIME_BETWEEN_SIGNALS)
     lock.release()
 
 
@@ -35,19 +36,9 @@ def handle_button(button: str):
 
     # Handle the button
     if button == 'VOLUME_UP':
-        presses = 1
-        json = request.get_json()
-        if json != None:
-            presses = json.get('presses', 1)
-
-        press_button(Button.VOLUME_UP, presses)
+        press_button(Button.VOLUME_UP)
     elif button == 'VOLUME_DOWN':
-        presses = 1
-        json = request.get_json()
-        if json != None:
-            presses = json.get('presses', 1)
-
-        press_button(Button.VOLUME_DOWN, presses)
+        press_button(Button.VOLUME_DOWN)
     elif button == 'POWER':
         press_button(Button.POWER)
     elif button == 'MUTE':
