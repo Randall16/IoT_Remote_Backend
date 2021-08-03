@@ -25,7 +25,7 @@ def handle_button(button: str):
 
     # Authenticate request
     request_api_key = request.headers.get('x-api-key', '')
-    if request_api_key not in config.VALID_KEYS:
+    if request_api_key not in config.VALID_API_KEYS:
         return abort(401)
     
     # Ensure button is given
