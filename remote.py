@@ -5,7 +5,7 @@ COMMAND = 'irsend'
 FLAG1 = 'SEND_ONCE'
 TV_NAME = 'sony'
 
-class Button(Enum):
+class RemoteButton(Enum):
     POWER = 'KEY_POWER'
     INPUT = 'KEY_KBDINPUTASSIST_ACCEPT'
     VOLUME_UP = 'KEY_VOLUMEUP'
@@ -30,10 +30,9 @@ class Button(Enum):
     MUTE = 'KEY_MUTE'
 
 
-def send_signal(button: Button):
-
+def send_signal(button: RemoteButton):
     # Create Bash command
     # button.value is appended three times because IR signal needs to be bursted
-    # NOTE this vaires from TV to TV so some will only it to be appened once
+    # NOTE this varies from TV to TV so some will only it to be appended once
     command = [COMMAND, FLAG1, TV_NAME, button.value, button.value, button.value]
     subprocess.run(command)
