@@ -3,15 +3,16 @@ from flask import Flask, abort, request
 from threading import Lock
 
 import config
-from remote import Button, RemoteButton, send_signal
+from remote import RemoteButton, send_signal
 
 # Globals
 app = Flask(__name__)
 lock = Lock()
 MINIMUM_TIME_BETWEEN_SIGNALS = 0.08
 
+
 # Functions
-def press_button(button: Button):
+def press_button(button: RemoteButton):
     # Using a lock because to ensure only one signal is being sent at a time
     lock.acquire()
     send_signal(button)
